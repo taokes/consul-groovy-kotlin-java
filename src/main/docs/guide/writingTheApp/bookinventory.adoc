@@ -1,0 +1,77 @@
+Create the `bookinventory` microservice:
+
+`mn create-app example.micronaut.bookinventory.bookinventory`
+
+The previous command creates a folder named `bookinventory` and a Micronaut app inside it with
+default package: `example.micronaut.bookinventory`.
+
+Micronaut already includes bean validation capabilities out of the box:
+
+[source,java]
+.bookinventory/build.gradle
+----
+include::{sourceDir}/bookinventory/build.gradle[tag=validator,indent=0]
+----
+
+Create a Controller:
+
+[source,java]
+.bookinventory/src/main/java/example/micronaut/bookinventory/BooksController.java
+----
+include::{sourceDir}/bookinventory/src/main/java/example/micronaut/bookinventory/BooksController.java[]
+----
+
+<1> The class is defined as a controller with the http://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Controller.html[@Controller] annotation mapped to the path `/books`
+<2> By default, `Content-Type` of Micronaut's response is `application/json` : override this with `text/plain` since we are returning a String, not a JSON object.
+<3> The `@Get` annotation is used to map the index method to an HTTP GET request on `/books/stock/{isbn}`.
+
+Create the POJO used by the controller:
+
+[source,java]
+.bookinventory/src/main/java/example/micronaut/bookinventory/BookInventory.java
+----
+include::{sourceDir}/bookinventory/src/main/java/example/micronaut/bookinventory/BookInventory.java[]
+----
+
+Write a test:
+
+[source,java]
+.bookinventory/src/test/java/example/micronaut/bookinventory/BooksControllerTest.java
+----
+include::{sourceDir}/bookinventory/src/test/java/example/micronaut/bookinventory/BooksControllerTest.java[]
+----
+
+Edit `application.yml`
+
+[source,yaml]
+.bookinventory/src/main/resources/application.yml
+----
+include::{sourceDir}/bookinventory/src/main/resources/application.yml[tag=mn]
+----
+
+<1> Configure the application name. The app name will be used later in the tutorial.
+<2> Configure the app to listen at port 8082
+
+Create a file named `application-test.yml` which is used in the test environment:
+
+[source,yaml]
+.bookinventory/src/main/resources/application-test.yml
+----
+include::{sourceDir}/bookinventory/src/main/resources/application-test.yml[tag=port]
+----
+
+<1> Start the micronaut microservice at a random port when running the tests.
+
+Run the unit test:
+
+[source,bash]
+----
+bookinventory $ ./gradlew test
+
+> Task :compileJava
+Note: Creating bean classes for 1 type elements
+
+
+BUILD SUCCESSFUL in 7s
+4 actionable tasks: 4 executed
+----
